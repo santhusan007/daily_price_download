@@ -1,14 +1,11 @@
 import numpy as np
-import psycopg2
 from psycopg2.extensions import register_adapter, AsIs
 import datetime
 from psycopg2.extras import RealDictCursor
 import nsepy
-import nsepy
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
-from psycopg2.extensions import register_adapter, AsIs
 import psycopg2
 import datetime as dt
 import os
