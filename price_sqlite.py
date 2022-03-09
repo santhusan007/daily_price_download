@@ -4,7 +4,6 @@ import datetime as dt
 import nsepy
 from bs4 import BeautifulSoup
 import requests
-import numpy as np
 import pandas as pd
 import zipfile
 import io
@@ -36,7 +35,9 @@ def rbi_sqlite():
         val=[v for v in cur_dict.values()]
         c.execute("INSERT INTO rbi_exchange(date,cur_id,rate ) VALUES ( ?,?,?)",(date,val[i],rbi_ref.iloc[0][i]))
     conn.commit()  
+
 rbi_sqlite()
+
 def dfFromURL(url, tableNumber=1):
     soup = BeautifulSoup(requests.get(url).content, 'lxml') # Parse the HTML as a string
     tables = soup.find_all('table')
@@ -78,8 +79,11 @@ def metal_sqlite(cu_df):
         c.execute("INSERT INTO cu_lme_csp(com_id,date,rate ) VALUES ( ?,?,?)",(com_val[i],date,cu_df.iloc[0][i+1]))
         conn.commit() 
 metal_sqlite(cu_df)
+
 aaj=dt.date.today().strftime('%d%b%Y').upper()
+
 bhav_url=f'https://archives.nseindia.com/content/historical/EQUITIES/2022/{aaj[2:5]}/cm{aaj}bhav.csv.zip'
+
 def bhavcopy():
     folder_location=r'C:\Users\Admin\Desktop\Python\Pandas\database\stock_screener'
     filename=os.path.join(folder_location,bhav_url.split("/")[-1])
@@ -94,6 +98,7 @@ def bhavcopy():
     df=pd.read_csv(filename[:-4])# avoiding the '.zip'(last 4 charcters) extesnion 
     return df
 stock_df=bhavcopy()
+
 def stock_sqlite():
     c.execute (""" SELECT id,symbol,company FROM stocks """ )
     rows=c.fetchall()
@@ -126,6 +131,7 @@ def stock_sqlite():
         sqlite3.register_adapter(np.int32,lambda val:float(val))
         c.execute("INSERT INTO stock_price(stock_id,date,open,high,low,close,volume ) VALUES ( ?,?,?,?,?,?,?)",(final_df['stk_id'].iloc[i],str(final_df['date'].iloc[i]).split(' ')[0],final_df['OPEN'].iloc[i],final_df['HIGH'].iloc[i],final_df['LOW'].iloc[i],final_df['CLOSE'].iloc[i],final_df['TOTTRDQTY'].iloc[i]))
     conn.commit()    
+
 stock_sqlite()
 
 def index_price():
